@@ -1,12 +1,12 @@
 namespace :db do
   def structure(prefix = "")
-    File.join(RAILS_ROOT, 'db', "#{prefix}structure.sql")
+    Rails.root.join('db', "#{prefix}structure.sql")
   end
 
   def domain
-    File.join(RAILS_ROOT, 'db', "domain.sql")
+    Rails.root.join('db', "domain.sql")
   end
-  
+
   namespace :structure do
     desc "Load the structure.sql file into the test database"
     task :load => [:environment] do
@@ -19,9 +19,9 @@ namespace :db do
         $stderr.write "** Structure file does not exist: #{structure}\n"
       end
     end
-    
+
     task :dump do
-      FileUtils.cp structure("#{RAILS_ENV.downcase}_"), structure
+      FileUtils.cp structure("#{Rails.env.downcase}_"), structure
     end
   end
 
@@ -40,7 +40,7 @@ namespace :db do
 
     desc "Dump the domain data to domain.sql"
     task :dump do
-      conf = Rails::Configuration.new.database_configuration[RAILS_ENV]
+      conf = Rails::Configuration.new.database_configuration[Rails.env]
       raise "Don't know how to handle anything but postgres" unless conf["adapter"] == "postgresql"
       $stderr.write "** Dumping domain data to #{domain}\n"
       $stderr.write "**   If your database has a password, you will have to enter it here\n"
@@ -63,7 +63,7 @@ namespace :db do
     desc "Reset the database from the rails structure file corresponding to the environment"
     task :reset => ['db:drop', 'db:create', 'db:structure:load', 'db:domain:load']
   end
-  
+
   desc "Dump the structure after a migration"
   task :migrate do
     Rake::Task["db:structure:dump"].invoke if ActiveRecord::Base.schema_format == :sql
@@ -75,6 +75,6 @@ namespace :db do
       Rake::Task["db:domain:dump"].invoke if ActiveRecord::Base.schema_format == :sql
     end
   end
-  
+
 end
 
