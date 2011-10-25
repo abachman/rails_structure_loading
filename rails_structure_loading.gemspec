@@ -18,7 +18,8 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     "README.rdoc",
-    "lib/tasks/rails_structure_loading.rake"
+    "lib/rails_structure_loading/engine.rb",
+    "lib/railties/tasks.rake"
   ]
   s.homepage = %q{http://github.com/ngauthier/rails_structure_loading}
   s.require_paths = ["lib"]
